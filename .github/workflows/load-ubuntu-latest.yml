@@ -20,7 +20,7 @@ jobs:
           sudo mount -t bpf bpffs /sys/fs/bpf
 
           # load the obj
-          sudo bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test
+          sudo bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test && echo "Load Success"
 
   load-22-04:
     runs-on: ubuntu-22.04
@@ -37,4 +37,4 @@ jobs:
           sudo mount -t bpf bpffs /sys/fs/bpf
 
           # load the obj
-          sudo bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test
+          sudo bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test && echo "Load Success"
