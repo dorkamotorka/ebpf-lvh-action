@@ -1,4 +1,4 @@
-name: Load eBPF (ubuntu-latest)
+name: Load eBPF (ubuntu)
 
 on:
   workflow_dispatch:
@@ -7,6 +7,23 @@ jobs:
 
   load-latest:
     runs-on: ubuntu-latest
+    steps:
+      - name: Load bpf
+        run: |
+          uname -a 
+
+          # download the compiled obj
+          wget --quiet https://github.com/cilium/ebpf/raw/refs/heads/main/examples/ringbuffer/bpf_bpfel.o
+          ls -lah
+          
+          # mount the bpf filesystem
+          sudo mount -t bpf bpffs /sys/fs/bpf
+
+          # load the obj
+          sudo bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test
+
+  load-22-04:
+    runs-on: ubuntu-22.04
     steps:
       - name: Load bpf
         run: |
