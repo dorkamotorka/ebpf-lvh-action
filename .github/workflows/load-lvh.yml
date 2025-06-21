@@ -36,6 +36,13 @@ jobs:
           host-mount: .
           install-dependencies: "true"
           cmd: |
+
+            echo "Kernel Version: "
             uname -a
+
+            echo ""
+            cd /host
             ls -lah
-            bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test && echo "Load Success"
+
+            echo ""
+            sudo bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test && echo "Load Success"
