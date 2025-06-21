@@ -1,0 +1,40 @@
+name: LVH Load
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+ 
+  load-vm:
+    runs-on: ubuntu-latest
+    name: eBPF Load
+    strategy:
+      fail-fast: false
+      matrix:
+        # for kernel tags: https://quay.io/repository/lvh-images/kind?tab=tags
+        # currently used tags are take from: https://github.com/harden-runner-canary/little-vm-helper-images/pull/1#issuecomment-2580730230
+        kernel: [ "6.6-20250616.013250-amd64"]
+    timeout-minutes: 10
+    steps:
+
+
+      - run: | 
+          # download the compiled obj 
+          wget --quiet https://github.com/cilium/ebpf/raw/refs/heads/main/examples/cgroup_skb/bpf_bpfel.o  
+          ls -lah
+      
+      - name: Provision LVH VMs
+        uses: cilium/little-vm-helper@v0.0.23 # v0.0.19
+        with:
+          test-name: tracer-test
+          image: "kind"
+          image-version: ${{ matrix.kernel }}
+          host-mount: .
+          install-dependencies: "true"
+          cmd: |
+            uname -a
+            bpftool prog load ./bpf_bpfel.o /sys/fs/bpf/test && echo "Load Success"
